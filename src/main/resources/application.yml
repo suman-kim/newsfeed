@@ -1,0 +1,66 @@
+server:
+  port: 8080
+
+# JVM 최적화 설정
+spring:
+  application:
+    name: newsfeed-app
+  jvm:
+    args: "-Xmx2g -Xms1g -XX:+UseG1GC -XX:MaxGCPauseMillis=200 -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/tmp/"
+---
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    org.springframework.orm.jpa: DEBUG
+
+---
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/news_feed?useUnicode=true&characterEncoding=UTF-8
+    username: root
+    password: root
+  jpa:
+    database: mysql
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: false
+        use_sql_comments: false
+        #        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+        jdbc:
+          batch_size: 25
+          connection:
+            provider_disables_autocommit: true
+          cache:
+            use_second_level_cache: true
+            use_query_cache: true
+          lob:
+            non_contextual_creation: true
+
+---
+jwt:
+  secret: c2lsdmVybmluZS10ZWNoLXNwcmluZy1ib290LWp3dC10dXRvcmlhbC1zZWNyZXQtc2lsdmVybmluZS10ZWNoLXNwcmluZy1ib290LWp3dC10dXRvcmlhbC1zZWNyZXQK
+  access-token-validity: 86400000      # 24?? (1000 * 60 * 60 * 24)
+  refresh-token-validity: 604800000    # 7? (1000 * 60 * 60 * 24 * 7)
+
+
+naver:
+  api:
+    enabled: true
+    timeout: 30000
+    headless: true
+
+google:
+  news:
+    enabled: false
+    timeout: 30000
+    headless: true
+
+daum:
+  enabled: false
+  timeout: 30000
+  headless: true
+
